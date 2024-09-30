@@ -7,9 +7,10 @@ import { RolService } from '../rol/rol.service';
 import { RolModule } from '../rol/rol.module';
 import { CacheModule } from '../services/cache/cache.module';
 import { CacheService } from '../services/cache/cache.service';
+import { NotificationModule } from '../notification/notification.module';
 
 @Module({
-  imports: [MongooseModule.forFeature([{ name: User.name, schema: UserSchema }]), RolModule, CacheModule],
+  imports: [MongooseModule.forFeature([{ name: User.name, schema: UserSchema }]), RolModule, CacheModule, NotificationModule],
   controllers: [UsersController],
   providers: [UsersService, CacheService],
   exports: [UsersService]

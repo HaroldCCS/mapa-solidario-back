@@ -29,6 +29,12 @@ export class User {
 
   @Prop({ required: false, default: true})
   status: boolean
+
+  @Prop({ type: mongoose.Schema.Types.String, required: false, default: 'pending'})
+  user_validated: 'pending' | 'approved' | 'rejected';
+
+  @Prop({ type: mongoose.Schema.Types.String, required: false})
+  user_validated_reason: string;
 }
 
 export const UserSchema = SchemaFactory.createForClass(User);

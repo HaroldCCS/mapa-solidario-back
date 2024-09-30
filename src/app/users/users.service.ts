@@ -9,6 +9,7 @@ import { User } from 'src/schemas/user.schema';
 import * as bcrypt from 'bcrypt';
 import { RolService } from '../rol/rol.service';
 import { CacheService } from '../services/cache/cache.service';
+import { NotificationService } from '../notification/notification.service';
 
 @Injectable()
 export class UsersService {
@@ -19,7 +20,8 @@ export class UsersService {
   constructor(
     @InjectModel(User.name) private UserModel: Model<User>,
     private rolService: RolService,
-    private cacheService: CacheService
+    private cacheService: CacheService,
+    private notificationService: NotificationService,
   ) { }
 
   async create(createUserDto: CreateUserDto) {
@@ -72,6 +74,23 @@ export class UsersService {
     const update = await this.UserModel.findOneAndUpdate({ _id: id }, { $set: updateUserDto }, { new: true });
     await this.cacheService.deleteCacheKey(UsersService.cache_keys.find_all);
     return update;
+  }
+
+  async userValidartion(id: string, data: {status: 'approved' | 'rejected', reason: string}) {
+    const user = this.update(id, {user_validated: data.status, user_validated_reason: data.reason});
+    if (typeof user == 'string') return user;
+
+    const names = {
+      approved: 'aprobado',
+      rejected: 'rechazado',
+    }
+    await this.notificationService.create({
+      user: id,
+      name: 'Se ha validado el estado de su usuario',
+      description: `Su usuario ha sido ${names[data.status]} ${data?.reason ? `por la razón: ${data.reason}` : ''}`,
+    });
+    
+    return user;
   }
 
   remove(id: string) {

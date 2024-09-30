@@ -28,4 +28,10 @@ export class CreateUserDto {
 
   @IsBoolean()
   status?: boolean;
+
+  @IsString()
+  user_validated?: 'pending' | 'approved' | 'rejected';
+
+  @IsString()
+  user_validated_reason?: string;
 }

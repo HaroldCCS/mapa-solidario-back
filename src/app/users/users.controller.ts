@@ -35,6 +35,12 @@ export class UsersController {
   }
 
   @UseGuards(JwtAuthGuard)
+  @Patch('user-validartion/:_id')
+  userValidartion(@Param('_id') id: string, @Body() data: {status: 'approved' | 'rejected', reason: string}) {
+    return this.usersService.userValidartion(id, data);
+  }
+
+  @UseGuards(JwtAuthGuard)
   @Delete(':id')
   remove(@Param('id') id: string) {
     return this.usersService.remove(id);

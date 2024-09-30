@@ -5,6 +5,9 @@ import { AuthModule } from './app/auth/auth.module';
 import { PermissionModule } from './app/permission/permission.module';
 import { RolModule } from './app/rol/rol.module';
 import { CacheModule} from './app/services/cache/cache.module';
+import { HeadquarterModule } from './app/headquarter/headquarter.module';
+import { EventModule } from './app/event/event.module';
+import { NotificationModule } from './app/notification/notification.module';
 
 @Module({
   imports: [
@@ -14,6 +17,9 @@ import { CacheModule} from './app/services/cache/cache.module';
     PermissionModule,
     RolModule,
     CacheModule,
+    HeadquarterModule,
+    EventModule,
+    NotificationModule,
   ],
   controllers: [],
   providers: [],
