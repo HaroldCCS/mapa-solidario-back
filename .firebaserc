@@ -1,5 +1,9 @@
 {
   "projects": {
-    "default": "mapa-solidario"
-  }
+    "default": "mapa-solidario-11b31",
+    "mapa-solidario": "mapa-solidario-11b31"
+  },
+  "targets": {},
+  "etags": {},
+  "dataconnectEmulatorConfig": {}
 }
