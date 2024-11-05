@@ -6,4 +6,7 @@ async function bootstrap() {
   app.enableCors();
   await app.listen(3001);
 }
-// bootstrap(); //Solo activar esto para pruebas
+if (process.argv?.find((arg) => arg === 'mode-test')) {
+  console.log('mode-test');
+  bootstrap();
+}
