@@ -10,6 +10,6 @@ import { CacheService } from '../services/cache/cache.service';
   controllers: [RolController],
   providers: [RolService, CacheService],
   imports: [MongooseModule.forFeature([{ name: Rol.name, schema: RolSchema }]), CacheModule],
-  exports: [RolService],
+  exports: [RolService, MongooseModule],
 })
 export class RolModule {}

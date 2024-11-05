@@ -6,6 +6,8 @@ import { Model, PopulateOptions } from 'mongoose';
 
 import { Event } from 'src/schemas/event.schema';
 import { CacheService } from '../services/cache/cache.service';
+import { UsersService } from '../users/users.service';
+import { NotificationService } from '../notification/notification.service';
 5
 @Injectable()
 export class EventService {
@@ -16,13 +18,19 @@ export class EventService {
 
   constructor(
     @InjectModel(Event.name) private EventModel: Model<Event>,
-    private cacheService: CacheService
+    private cacheService: CacheService,
+    private userService: UsersService,
+    private notificationService: NotificationService,
   ) { }
 
   async create(createEventDto: CreateEventDto) {
     const createEvent = new this.EventModel(createEventDto);
     const save = await createEvent.save();
-    await this.cacheService.deleteCacheKey(EventService.cache_keys.find_all);
+
+    await Promise.all([
+      this.cacheService.deleteCacheKey(EventService.cache_keys.find_all),
+      this.notificationNewEvent(createEventDto)
+    ]);
     return save;
   }
 
@@ -54,5 +62,19 @@ export class EventService {
 
   remove(_id: string) {
     return `This action removes a #${_id} Event`;
+  }
+
+
+
+  async notificationNewEvent(data: CreateEventDto) {
+    const users = await this.userService.getUsersByRol('beneficiario');
+
+    for (const { _id } of users) {
+      await this.notificationService.create({
+        user: _id?.toString(),
+        name: '¡Hay un nuevo evento disponible!',
+        description: `${data.title}: ${data.description} : ${data?.ubication} : ${new Date(data?.day)?.toLocaleString()}`,
+      });
+    }
   }
 }

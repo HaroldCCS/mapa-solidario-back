@@ -13,6 +13,6 @@ import { NotificationModule } from '../notification/notification.module';
   imports: [MongooseModule.forFeature([{ name: User.name, schema: UserSchema }]), RolModule, CacheModule, NotificationModule],
   controllers: [UsersController],
   providers: [UsersService, CacheService],
-  exports: [UsersService]
+  exports: [UsersService, MongooseModule]
 })
 export class UsersModule { }

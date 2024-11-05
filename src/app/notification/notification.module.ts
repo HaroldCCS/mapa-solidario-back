@@ -10,6 +10,6 @@ import { CacheService } from '../services/cache/cache.service';
   controllers: [NotificationController],
   imports: [MongooseModule.forFeature([{ name: Notification.name, schema: NotificationSchema }]), CacheModule],
   providers: [NotificationService, CacheService],
-  exports: [NotificationService]
+  exports: [NotificationService, MongooseModule]
 })
 export class NotificationModule {}

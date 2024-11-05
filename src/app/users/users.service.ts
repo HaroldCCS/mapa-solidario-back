@@ -25,6 +25,8 @@ export class UsersService {
   ) { }
 
   async create(createUserDto: CreateUserDto) {
+    console.log('createUserDto', createUserDto);
+
     if (!createUserDto.email) throw new BadRequestException('email-required', 'Correo obligatorio');
     if (!createUserDto.name) throw new BadRequestException('name-required', 'Nombre obligatoria');
 
@@ -37,7 +39,15 @@ export class UsersService {
 
     const [password, rol] = await Promise.all([
       bcrypt.hash(createUserDto?.password || createUserDto.email, 8),
-      this.rolService.findOneByName(createUserDto?.rol)
+      (async () => {
+        try {
+          const rol = await this.rolService.findOneByName(createUserDto?.rol)
+          if (rol) return rol;
+        } catch (error) {
+          const rol = await this.rolService.findOne(createUserDto?.rol);
+          return rol;
+        }
+      })()
     ]);
 
 
@@ -91,6 +101,13 @@ export class UsersService {
     });
     
     return user;
+  }
+
+
+  public async getUsersByRol(rol: string) {
+    const rol_dat = await this.rolService.findAll({ name : rol });
+    const users = await this.UserModel.find({ rol: rol_dat[0]._id }).exec();
+    return users;
   }
 
   remove(id: string) {

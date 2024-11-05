@@ -52,7 +52,12 @@ export class HeadquarterService {
     return update
   }
 
-  remove(_id: string) {
-    return `This action removes a #${_id} rol`;
+  async remove(_id: string) {
+    const headquarter = await this.HeadquarterModel.findById(_id).exec();
+    if (!headquarter?._id) return { message: 'not found' };
+
+    await this.HeadquarterModel.findByIdAndDelete(_id);
+    await this.cacheService.deleteCacheKey(HeadquarterService.cache_keys.find_all);
+    return { message: 'deleted' };
   }
 }
