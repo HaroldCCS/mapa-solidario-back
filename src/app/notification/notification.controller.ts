@@ -1,6 +1,6 @@
 import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
 import { NotificationService } from './notification.service';
-import { CreateNotificationDto } from './dto/create-notification.dto';
+import { CreateManyNotificationDto, CreateNotificationDto } from './dto/create-notification.dto';
 import { UpdateNotificationDto } from './dto/update-notification.dto';
 
 @Controller('notification')
@@ -10,6 +10,11 @@ export class NotificationController {
   @Post()
   create(@Body() createNotificationDto: CreateNotificationDto) {
     return this.notificationService.create(createNotificationDto);
+  }
+
+  @Post('/create-many')
+  notificateMany(@Body() createNotificationDto: CreateManyNotificationDto) {
+    return this.notificationService.createMany(createNotificationDto);
   }
 
   @Get()

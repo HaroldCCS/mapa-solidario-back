@@ -20,3 +20,15 @@ export class CreateNotificationDto {
   @IsBoolean()
   read?: boolean;
 }
+
+
+export class CreateManyNotificationDto {
+  @IsArray()
+  users: string[];
+
+  @IsString()
+  name?: string;
+
+  @IsString()
+  description?: string;
+}

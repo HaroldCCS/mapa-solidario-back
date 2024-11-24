@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { CreateNotificationDto } from './dto/create-notification.dto';
+import { CreateNotificationDto, CreateManyNotificationDto } from './dto/create-notification.dto';
 import { UpdateNotificationDto } from './dto/update-notification.dto';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model, PopulateOptions } from 'mongoose';
@@ -24,6 +24,19 @@ export class NotificationService {
     const save = await createNotification.save();
     await this.cacheService.deleteCacheKey(NotificationService.cache_keys.find_all);
     return save;
+  }
+
+  async createMany(createMany: CreateManyNotificationDto) {
+    const notifications_bulk: any[] = createMany?.users?.map(user => new this.NotificationModel({
+      user,
+      name: createMany?.name,
+      description: createMany?.description,
+    }))
+
+    const save = await this.NotificationModel.insertMany(notifications_bulk);
+    await this.cacheService.deleteCacheKey(NotificationService.cache_keys.find_all);
+
+    return {success: true, message: 'Notifications created'};
   }
 
   async findAll(where?: any, populate?: PopulateOptions, select: string = '-updatedAt') {

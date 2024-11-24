@@ -11,6 +11,18 @@ import { RolService } from '../rol/rol.service';
 import { CacheService } from '../services/cache/cache.service';
 import { NotificationService } from '../notification/notification.service';
 
+const names_traduction = {
+  name: 'nombre',
+  cell_phone: 'celular',
+  password: 'contraseña',
+  rol: 'rol',
+  status: 'estado',
+  nit: 'nit',
+  address: 'direccion',
+  user_validated: 'validacion',
+  user_validated_reason: 'motivo validacion',
+}
+
 @Injectable()
 export class UsersService {
   static cache_keys = {
@@ -76,13 +88,37 @@ export class UsersService {
     const updatedUser = await this.UserModel.findById(id).exec();
     if (!updatedUser?._id) return 'not found';
 
+    if (updateUserDto.password === '') {
+      delete updateUserDto.password
+    }
+
     if (updateUserDto.password) {
       const password = await bcrypt.hash(updateUserDto.password, 8);
       updateUserDto.password = password;
     }
 
+    //Validar que datos han cambiado
+    const propertiesChanged = [];
+    for (const key of Object.keys(updateUserDto)) {
+      if (!updateUserDto[key] || (updateUserDto[key] === updatedUser[key])) {
+        delete updateUserDto[key];
+        continue;
+      }
+      if (key === '_id') continue;
+      if (key === 'rol') continue;
+      propertiesChanged.push(key);
+    }
+
     const update = await this.UserModel.findOneAndUpdate({ _id: id }, { $set: updateUserDto }, { new: true });
-    await this.cacheService.deleteCacheKey(UsersService.cache_keys.find_all);
+
+    await Promise.all([
+    this.cacheService.deleteCacheKey(UsersService.cache_keys.find_all),
+    this.notificationService.create({
+      user: id,
+      name: 'Su usuario ha sido actualizado',
+      description: `Se actualizó la siguiente información: ${propertiesChanged.map(key => `${names_traduction[key]}`).join(', ')}`,
+    })]);
+
     return update;
   }
 

@@ -23,6 +23,9 @@ export class CreateUserDto {
   @IsString()
   nit?: string;
 
+  @IsString()
+  address?: string;
+
   @IsArray()
   rol?: string;
 
