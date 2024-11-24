@@ -8,6 +8,9 @@ import { CacheModule} from './app/services/cache/cache.module';
 import { HeadquarterModule } from './app/headquarter/headquarter.module';
 import { EventModule } from './app/event/event.module';
 import { NotificationModule } from './app/notification/notification.module';
+import { SurveyPropertieModule } from './app/survey-propertie/survey-propertie.module';
+import { ReportModule } from './app/report/report.module';
+import { SurveyUserModule } from './app/survey-user/survey-user.module';
 
 @Module({
   imports: [
@@ -20,6 +23,9 @@ import { NotificationModule } from './app/notification/notification.module';
     HeadquarterModule,
     EventModule,
     NotificationModule,
+    SurveyPropertieModule,
+    SurveyUserModule,
+    ReportModule,
   ],
   controllers: [],
   providers: [],
