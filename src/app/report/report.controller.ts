@@ -15,4 +15,9 @@ export class ReportController {
     return this.reportService.reportSurveys();
   }
 
+  @Get('/surveys-statistics')
+  reportSurveysStatistics() {
+    return this.reportService.reportSurveysStatistics();
+  }
+
 }

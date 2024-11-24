@@ -28,6 +28,29 @@ export class ReportService {
     }));
   }
 
+  async reportSurveysStatistics() {
+    const [properties, surveys] = await Promise.all([
+      this.surveyPropertieService.findAll(),
+      this.surveyUserService.findAll(),
+    ]);
+    const propertie_id_name: { [_id: string]: {name: string, count: number} } = {};
+    properties.forEach(property => propertie_id_name[property._id?.toString()] ={ name: property?.propertie, count: 0 });
+
+
+    surveys.forEach(survey => {
+      if (!propertie_id_name[survey?.propertie]) return;
+      propertie_id_name[survey?.propertie].count++;
+    });
+
+
+    const response: {label: string, value: number}[] = [];
+    for (const propertie_id in propertie_id_name) {
+      const propertie_name = propertie_id_name[propertie_id];
+      response.push({label: propertie_name.name, value: propertie_name.count});
+    }
+    return response;
+  }
+
   async reportSurveys() {
     const [users, properties, surveys] = await Promise.all([
       this.userService.getUsersByRol('beneficiario'),
