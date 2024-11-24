@@ -36,4 +36,10 @@ export class SurveyUserController {
   remove(@Param('_id') _id: string) {
     return this.surveyUserService.remove(_id);
   }
+
+
+  @Post('/save-many/:_id')
+  saveMany(@Param('_id') _id: string, @Body() data: CreateSurveyUserDto[]) {
+    return this.surveyUserService.saveMany({surveys: data, user_id: _id});
+  }
 }
